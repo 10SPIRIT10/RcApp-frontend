@@ -1,106 +1,93 @@
-// Remplace cette URL par l'URL exacte transmise par Render lors du déploiement
-const API_URL = "rcapp-backend-production.up.railway.app";
+// URL de ton API Backend hébergée sur Railway
+const API_URL = 'https://rcapp-backend-production.up.railway.app';
 
-document.addEventListener("DOMContentLoaded", () => {
-  // 1. Détection automatique du recruteur via l'URL (ex: index.html?ref=JEAN237)
-  const urlParams = new URLSearchParams(window.location.search);
-  const recruiterRef = urlParams.get("ref");
+document.addEventListener('DOMContentLoaded', () => {
+    const candidateForm = document.getElementById('candidateForm');
+    const responseSection = document.getElementById('responseSection');
+    const officeDetails = document.getElementById('officeDetails');
+    const refCodeInput = document.getElementById('refCode');
 
-  if (recruiterRef) {
-    document.getElementById("recruiter_ref").value = recruiterRef;
-    console.log(`Lien de parrainage détecté : ${recruiterRef}`);
-  }
+    // 1. Extraire le code recruteur/parrain depuis l'URL (ex: https://rcapp-luco.netlify.app/?ref=TEST237)
+    const urlParams = new URLSearchParams(window.location.search);
+    const refCode = urlParams.get('ref');
 
-  // 2. Écoute de la soumission du formulaire
-  const form = document.getElementById("candidate-form");
-  form.addEventListener("submit", handleFormSubmit);
-});
-
-async function handleFormSubmit(e) {
-  e.preventDefault();
-
-  const submitBtn = document.getElementById("submit-btn");
-  const btnText = document.getElementById("btn-text");
-  const spinner = document.getElementById("spinner");
-
-  // État de chargement (désactivation du bouton)
-  submitBtn.disabled = true;
-  btnText.textContent = "Envoi en cours...";
-  spinner.classList.remove("hidden");
-
-  // Préparation des données du formulaire
-  const formData = {
-    recruiter_ref: document.getElementById("recruiter_ref").value,
-    fullname: document.getElementById("fullname").value.trim(),
-    phone: "+237" + document.getElementById("phone").value.trim(),
-    city: document.getElementById("city").value,
-    neighborhood: document.getElementById("neighborhood").value.trim(),
-    sector: document.getElementById("sector").value,
-  };
-
-  try {
-    // Requête POST vers l'API Express
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-
-    const result = await response.json();
-
-    if (!response.ok || !result.success) {
-      throw new Error(
-        result.error || "Erreur lors de l'enregistrement de la candidature.",
-      );
+    if (refCode && refCodeInput) {
+        refCodeInput.value = refCode.trim().toUpperCase();
     }
 
-    // Affichage dynamique des résultats retournés par le backend
-    displayRedirectionResult(formData, result.office);
-  } catch (error) {
-    console.error("Erreur API :", error);
-    alert(`Désolé : ${error.message || "Impossible de contacter le serveur."}`);
-  } finally {
-    // Réinitialisation de l'état du bouton
-    submitBtn.disabled = false;
-    btnText.textContent = "Envoyer ma candidature";
-    spinner.classList.add("hidden");
-  }
-}
+    // 2. Gestion de la soumission du formulaire
+    if (candidateForm) {
+        candidateForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-function displayRedirectionResult(candidate, office) {
-  // Masquer le formulaire et afficher le bloc de résultat
-  document.getElementById("form-section").classList.add("hidden");
-  const resultSection = document.getElementById("result-section");
-  resultSection.classList.remove("hidden");
+            const submitBtn = candidateForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn ? submitBtn.innerText : 'Envoyer';
+            
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerText = 'Enregistrement en cours...';
+            }
 
-  if (office) {
-    // CAS A : Le backend a trouvé un bureau actif pour la ville saisie
-    document.getElementById("status-icon").textContent = "✅";
-    document.getElementById("result-title").textContent =
-      `Merci ${candidate.fullname} !`;
-    document.getElementById("result-message").textContent =
-      `Votre pré-inscription a été validée. Un bureau local est disponible à ${candidate.city}. Vous pouvez contacter notre agent ou vous y rendre directement.`;
+            // Extraction des valeurs des champs
+            const formData = {
+                fullname: document.getElementById('fullname').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                city: document.getElementById('city').value,
+                neighborhood: document.getElementById('neighborhood').value.trim(),
+                sector: document.getElementById('sector').value,
+                recruiter_ref: document.getElementById('refCode') ? document.getElementById('refCode').value.trim().toUpperCase() : ''
+            };
 
-    // Injection des données réelles du bureau depuis Supabase
-    document.getElementById("office-name").textContent =
-      `Bureau GetJob - ${office.city}`;
-    document.getElementById("office-address").textContent =
-      `📍 ${office.address}`;
-    document.getElementById("office-call").href = `tel:${office.phone}`;
-    document.getElementById("office-wa").href =
-      `https://wa.me/237${office.phone}?text=${encodeURIComponent(`Bonjour, je m'appelle ${candidate.fullname}. Je me suis pré-inscrit(e) via la plateforme pour le domaine ${candidate.sector}.`)}`;
+            try {
+                // Envoi de la requête POST au backend Railway
+                const response = await fetch(`${API_URL}/api/candidates`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
 
-    document.getElementById("office-info").classList.remove("hidden");
-  } else {
-    // CAS B : Aucun bureau enregistré dans cette ville (Mise en attente)
-    document.getElementById("status-icon").textContent = "⏳";
-    document.getElementById("result-title").textContent =
-      `Candidature Enregistrée !`;
-    document.getElementById("result-message").textContent =
-      `Merci ${candidate.fullname}. Nous n'avons pas encore de bureau physique à ${candidate.city}, mais votre dossier a été attribué à nos agents. Vous serez recontacté(e) par téléphone ou WhatsApp dès qu'une opportunité se présente dans votre zone.`;
+                const data = await response.json();
 
-    document.getElementById("office-info").classList.add("hidden");
-  }
-}
+                if (!response.ok) {
+                    throw new Error(data.message || data.error || 'Une erreur est survenue lors de l\'enregistrement.');
+                }
+
+                // Masquer le formulaire et afficher la section de confirmation
+                candidateForm.reset();
+                candidateForm.style.display = 'none';
+
+                if (responseSection) {
+                    responseSection.style.display = 'block';
+                }
+
+                // Affichage du bureau attribué ou message générique
+                if (data.office && officeDetails) {
+                    officeDetails.innerHTML = `
+                        <div class="office-card">
+                            <h3>📍 Votre bureau de rattachement : ${data.office.office_name || data.office.city}</h3>
+                            <p><strong>Adresse :</strong> ${data.office.address}</p>
+                            <p><strong>Contact Responsable :</strong> <a href="tel:${data.office.manager_phone}">${data.office.manager_phone}</a></p>
+                        </div>
+                    `;
+                } else if (officeDetails) {
+                    officeDetails.innerHTML = `
+                        <p class="info-text">
+                            Votre candidature a bien été enregistrée. Un agent de votre région prendra contact avec vous dans les plus brefs délais.
+                        </p>
+                    `;
+                }
+
+            } catch (error) {
+                console.error('Erreur lors de la soumission :', error);
+                alert(`Désolé : ${error.message}`);
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = originalBtnText;
+                }
+            }
+        });
+    }
+});

@@ -1,5 +1,5 @@
 // URL de ton API Backend Render
-const API_URL = "rcapp-backend-production.up.railway.app";
+const API_URL = "https://rcapp-backend-production.up.railway.app";
 
 let currentAgentRef = null;
 let allCandidates = [];
@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (savedRef) {
     autoLogin(savedRef);
   }
+
 
   // Écoute de la connexion
   document.getElementById("login-form").addEventListener("submit", (e) => {
