@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GetJob CMR - Pré-inscription Emploi</title>
+
+    <link rel="stylesheet" href="../style/style.css" />
+    <link rel="manifest" href="../manifest.json" />
+    <meta name="theme-color" content="#1e293b" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- En-tête -->
+      <header class="app-header">
+        <div class="logo-badge">🇨🇲 GetJob CMR</div>
+        <h1>Postulez en quelques clics</h1>
+        <p>Trouvez une opportunité professionnelle proche de chez vous.</p>
+      </header>
+
+      <!-- FORMULAIRE CANDIDAT -->
+      <main id="form-section" class="card">
+        <form id="candidate-form">
+          <!-- Stocke automatiquement le code du recruteur depuis l'URL (?ref=JEAN237) -->
+          <input
+            type="hidden"
+            id="recruiter_ref"
+            name="recruiter_ref"
+            value="GENERAL"
+          />
+
+          <div class="form-group">
+            <label for="fullname"
+              >Nom & Prénom <span class="req">*</span></label
+            >
+            <input
+              type="text"
+              id="fullname"
+              placeholder="ex: Paul Biya"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="phone"
+              >Numéro Téléphone (WhatsApp) <span class="req">*</span></label
+            >
+            <div class="phone-input">
+              <span class="prefix">+237</span>
+              <input
+                type="tel"
+                id="phone"
+                placeholder="6XX XXX XXX"
+                pattern="[0-9]{9}"
+                maxlength="9"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="city">Ville <span class="req">*</span></label>
+              <select id="city" required>
+                <option value="">Sélectionnez...</option>
+                <option value="Yaoundé">Yaoundé</option>
+                <option value="Douala">Douala</option>
+                <option value="Bafoussam">Bafoussam</option>
+                <option value="Garoua">Garoua</option>
+                <option value="Bamenda">Bamenda</option>
+                <option value="Maroua">Maroua</option>
+                <option value="Autre">Autre ville</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="neighborhood"
+                >Quartier <span class="req">*</span></label
+              >
+              <input
+                type="text"
+                id="neighborhood"
+                placeholder="ex: Bastos, Akwa..."
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="sector"
+              >Secteur d'activité d'intérêt <span class="req">*</span></label
+            >
+            <select id="sector" required>
+              <option value="">Choisissez un domaine...</option>
+              <option value="Commerces & Ventes">Commerces & Ventes</option>
+              <option value="BTP & Artisanat">BTP & Artisanat</option>
+              <option value="Sécurité & Gardiennage">
+                Sécurité & Gardiennage
+              </option>
+              <option value="Chauffeur & Logistique">
+                Chauffeur & Logistique
+              </option>
+              <option value="Restauration & Hôtellerie">
+                Restauration & Hôtellerie
+              </option>
+              <option value="Informatique & Réseaux">
+                Informatique & Réseaux
+              </option>
+              <option value="Autre">Autre secteur</option>
+            </select>
+          </div>
+
+          <button type="submit" id="submit-btn" class="btn-primary">
+            <span id="btn-text">Envoyer ma candidature</span>
+            <div class="spinner hidden" id="spinner"></div>
+          </button>
+        </form>
+      </main>
+
+      <!-- PAGE DE CONFIRMATION ET REDIRECTION DYNAMIQUE -->
+      <section id="result-section" class="card hidden">
+        <div class="status-icon" id="status-icon">📍</div>
+        <h2 id="result-title">Analyse en cours...</h2>
+        <p id="result-message" class="result-body"></p>
+
+        <!-- Affiché si un bureau existe dans la ville -->
+        <div id="office-info" class="office-card hidden">
+          <h3 id="office-name">Bureau JobDirect</h3>
+          <p id="office-address">📍 Adresse non spécifiée</p>
+
+          <div class="action-buttons">
+            <a id="office-call" href="#" class="btn-call"
+              >📞 Appeler le bureau</a
+            >
+            <a id="office-wa" href="#" target="_blank" class="btn-wa"
+              >💬 Écrire sur WhatsApp</a
+            >
+          </div>
+        </div>
+
+        <button onclick="window.location.reload()" class="btn-secondary">
+          Soumettre une autre réponse
+        </button>
+      </section>
+
+      <!-- Footer -->
+      <footer class="app-footer">
+        <p>© 2026 GetJob Cameroun - Tous droits réservés.</p>
+      </footer>
+    </div>
+
+    <script src="../../backend/script/app.js"></script>
+  </body>
+</html>

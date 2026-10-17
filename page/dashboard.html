@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GetJob CMR - Espace Recruteur</title>
+  
+  <link rel="stylesheet" href="../style/style.css">
+  <link rel="stylesheet" href="../style/dashboard.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f172a">
+</head>
+<body>
+
+  <div class="container dashboard-container">
+    
+    <!-- ECRAN DE CONNEXION (Affiché par défaut) -->
+    <section id="login-section" class="card">
+      <div class="logo-badge">🔐 Espace Recruteur</div>
+      <h2>Connexion Agent</h2>
+      <p class="subtitle">Entrez votre code recruteur pour accéder à vos candidats.</p>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label for="ref-code-input">Code Recruteur (ex: JEAN237) <span class="req">*</span></label>
+          <input type="text" id="ref-code-input" placeholder="Entrez votre code" required style="text-transform:uppercase;">
+        </div>
+
+        <button type="submit" id="login-btn" class="btn-primary">
+          <span>Accéder au Dashboard</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- TABLEAU DE BORD (Masqué avant connexion) -->
+    <section id="dashboard-section" class="hidden">
+      
+      <!-- En-tête Recruteur -->
+      <header class="dashboard-header card">
+        <div class="user-info">
+          <span class="avatar">👨‍💼</span>
+          <div>
+            <h2 id="agent-name">Agent GetJob</h2>
+            <p id="agent-code" class="ref-tag">Code : ---</p>
+          </div>
+        </div>
+        <button id="logout-btn" class="btn-logout" title="Déconnexion">🚪</button>
+      </header>
+
+      <!-- Barre d'Action & Lien Personnel -->
+      <div class="share-box card">
+        <div class="share-info">
+          <p class="share-label">Mon lien de publication Facebook :</p>
+          <code id="personal-link">https://.../index.html?ref=...</code>
+        </div>
+        <button id="copy-link-btn" class="btn-copy">📋 Copier mon lien</button>
+      </div>
+
+      <!-- Statistiques Rapides -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-num" id="total-count">0</span>
+          <span class="stat-label">Total Intéressés</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num" id="new-count">0</span>
+          <span class="stat-label">Nouveaux</span>
+        </div>
+      </div>
+
+      <!-- Filtres de Recherche -->
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="ALL">Tous</button>
+        <button class="filter-btn" data-filter="NOUVEAU">Nouveaux</button>
+        <button class="filter-btn" data-filter="ARCHIVE">Archivés</button>
+      </div>
+
+      <!-- Liste des Candidats -->
+      <main class="candidates-list" id="candidates-container">
+        <div class="empty-state">
+          <p>⏳ Chargement des candidats en cours...</p>
+        </div>
+      </main>
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>© 2026 GetJob Cameroun - Dashboard PWA</p>
+    </footer>
+
+  </div>
+
+  <script src="../../backend/script/dashboard.js"></script>
+  <script src="../../backend/script/ServiceWorker.js"></script>
+</body>
+</html>
