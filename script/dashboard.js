@@ -63,8 +63,7 @@ function autoLogin(refCode) {
   const baseUrl =
     window.location.origin +
     window.location.pathname.replace("dashboard.html", "index.html");
-    let phat = "/fomulaire.html";
-  const shareUrl = `${baseUrl}${phat}?ref=${refCode}`;
+  const shareUrl = `${baseUrl}/formulaire.html?ref=${refCode}`;
   document.getElementById("personal-link").textContent = shareUrl;
 
   // Charger les candidats depuis l'API
@@ -176,4 +175,3 @@ function copyPersonalLink() {
     }, 2000);
   });
 }
-
