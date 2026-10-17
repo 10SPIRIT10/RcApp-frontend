@@ -63,7 +63,7 @@ function autoLogin(refCode) {
   const baseUrl =
     window.location.origin +
     window.location.pathname.replace("dashboard.html", "index.html");
-  const shareUrl = `${baseUrl}/formulaire.html?ref=${refCode}`;
+  const shareUrl = `${baseUrl}formulaire.html?ref=${refCode}`;
   document.getElementById("personal-link").textContent = shareUrl;
 
   // Charger les candidats depuis l'API
